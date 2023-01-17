@@ -41,8 +41,7 @@ main {
 	min-height: 100vh;
 }
 
-canvas,
-.canvas {
+canvas {
 	display: block;
 	position: absolute;
 	overflow: hidden;
@@ -53,7 +52,6 @@ canvas,
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%) translateZ(0);
-	pointer-events: none;
 }
 
 button {
