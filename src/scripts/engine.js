@@ -1,10 +1,10 @@
 class Engine {
 	constructor() {
 		this.canvas = document.querySelector("#canvas");
-		canvas.width = 1024;
-		canvas.height = 480;
-		this.width = this.canvas.width;
-		this.height = this.canvas.height;
+		this.width = 1024;
+		this.height = 480;
+		canvas.width = this.width;
+		canvas.height = this.height;
 	}
 	init() {}
 	render() {}

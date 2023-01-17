@@ -2,8 +2,6 @@ import kaboom from "kaboom";
 import Engine from "./engine.js";
 
 const SPEED = 120;
-const JUMP_FORCE = 240;
-
 class KaboomEngine extends Engine {
 	constructor() {
 		super();
@@ -11,23 +9,23 @@ class KaboomEngine extends Engine {
 	init() {
 		// Start a kaboom game
 		const k = kaboom({
-			scale: 4,
 			background: [26, 26, 26],
 			global: false,
 			canvas: this.canvas,
-
+			width: this.width,
+			height: this.height,
 			font: "sinko",
 		});
 		this.k = k;
 
-		// Loading a multi-frame sprite
+		// Loading a multi-frame sprite is simple to use
 		k.loadSprite("player", "spritesheet.png", {
 			// The image contains 25 frames layed out horizontally, slice it into individual frames
 			sliceX: 25,
 			// Define animations
 			anims: {
 				idle: {
-					// Starts from frame 0, ends at frame 3
+					// Starts from frame 0, ends at frame 10
 					from: 0,
 					to: 10,
 					// Frame per second
@@ -40,101 +38,79 @@ class KaboomEngine extends Engine {
 					speed: 20,
 					loop: true,
 				},
-				// This animation only has 1 frame
-				jump: {
-					from: 23,
-					to: 23,
-					speed: 2.5,
-					loop: false,
-				},
-				fall: 24,
 			},
 		});
+		k.gravity(0);
 
-		k.gravity(640);
+		// Debug mode is availabe through .debug
+		// k.debug.inspect = true;
 
 		// Add our player character
 		this.player = k.add([
 			k.sprite("player"),
-			k.pos(k.center()),
+			k.pos(0, 0),
 			k.origin("center"),
+			k.scale(3),
 			k.area(),
-			k.body(),
 		]);
 		// .play is provided by sprite() component, it starts playing the specified animation (the animation information of "idle" is defined above in loadSprite)
 		this.player.play("idle");
+		this.player.onUpdate(() => {
+			k.camPos(this.camera);
+		});
+		this.camera = this.player.pos;
 
-		// Add a platform
-		this.platform = k.add([
-			k.rect(k.width(), 24),
-			k.area(),
-			k.pos(0, k.height() - 24),
-			k.solid(),
-			k.color(1, 1, 1),
+		// Add some text to show the current animation status
+		this.label = k.add([
+			k.text(this.getSpriteInfo()),
+			k.pos(15),
+			k.scale(3),
+			k.fixed(),
 		]);
-		// Add some text to show the current animation
-		this.label = k.add([k.text(this.getSpriteInfo()), k.pos(4)]);
 		this.initInputs();
 	}
 	getSpriteInfo() {
-		return `State: ${this.player.curAnim()}\nFrame: ${
-			this.player.frame
-		}`.trim();
+		return `
+State: ${this.player.curAnim()}
+Frame: ${this.player.frame}
+Pos: ${Math.round(this.player.pos.x)},${Math.round(this.player.pos.y)}`.trim();
 	}
 	initInputs() {
 		const k = this.k;
 		const player = this.player;
-		// Switch to "idle" or "run" animation when player hits ground
-		player.onGround(() => {
-			if (!k.isKeyDown("left") && !k.isKeyDown("right")) {
-				player.play("idle");
-			} else {
-				player.play("run");
-			}
-		});
-		// You can also register an event that runs when certain anim ends
-		player.onAnimEnd("jump", () => {
-			player.play("fall");
-		});
-		k.onKeyPress(["space", "up"], () => {
-			if (player.isGrounded()) {
-				player.jump(JUMP_FORCE);
-				player.play("jump");
-			}
-		});
-		k.onKeyDown("left", () => {
-			if (player.pos.x - player.width / 2 + 3 > 0) {
-				player.move(-SPEED, 0);
-			}
+
+		// A little bit problem as this is not extensible, seems to be difficult if we ever wanted to checking for currently keydowns
+		k.onKeyDown(["left", "a"], () => {
+			player.move(-SPEED, 0);
 			player.flipX(true);
 			// .play() will reset to the first frame of the anim, so we want to make sure it only runs when the current animation is not "run"
-			if (player.isGrounded() && player.curAnim() !== "run") {
-				player.play("run");
-			}
+			if (player.curAnim() !== "run") player.play("run");
 		});
-		k.onKeyDown("right", () => {
-			if (player.pos.x + player.width / 2 - 3 < k.width()) {
-				player.move(SPEED, 0);
-			}
+		k.onKeyDown(["right", "d"], () => {
+			player.move(SPEED, 0);
 			player.flipX(false);
-			if (player.isGrounded() && player.curAnim() !== "run") {
-				player.play("run");
-			}
+			if (player.curAnim() !== "run") player.play("run");
 		});
-		k.onKeyRelease(["left", "right"], () => {
-			// Only reset to "idle" if player is not holding any of these keys
-			if (
-				player.isGrounded() &&
-				!k.isKeyDown("left") &&
-				!k.isKeyDown("right")
-			) {
-				player.play("idle");
-			}
+		k.onKeyDown(["up", "w"], () => {
+			player.move(0, -SPEED);
+			if (player.curAnim() !== "run") player.play("run");
+		});
+		k.onKeyDown(["down", "s"], () => {
+			player.move(0, SPEED);
+			if (player.curAnim() !== "run") player.play("run");
+		});
+		k.onKeyRelease(["left", "right", "up", "down", "a", "d", "w", "s"], () => {
+			player.play("idle");
 		});
 	}
 	render() {
-		this.k.onUpdate(() => {
+		const k = this.k;
+		k.onUpdate(() => {
 			this.label.text = this.getSpriteInfo();
+			this.camera = k.vec2(
+				k.lerp(this.camera.x, this.player.pos.x, 0.03),
+				k.lerp(this.camera.y, this.player.pos.y, 0.03)
+			);
 		});
 	}
 }
