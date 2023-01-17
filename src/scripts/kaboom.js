@@ -43,7 +43,7 @@ class KaboomEngine extends Engine {
 		k.gravity(0);
 
 		// Debug mode is availabe through .debug
-		// k.debug.inspect = true;
+		k.debug.inspect = false;
 
 		// Add our player character
 		this.player = k.add([
