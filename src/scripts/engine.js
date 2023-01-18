@@ -5,6 +5,10 @@ class Engine {
 		this.height = 480;
 		canvas.width = this.width;
 		canvas.height = this.height;
+		this.texture = {
+			width: 32,
+			height: 32,
+		};
 	}
 	init() {}
 	render() {}

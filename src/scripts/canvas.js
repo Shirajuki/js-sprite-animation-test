@@ -11,10 +11,6 @@ const lerp = (start, end, amt) => {
 class CanvasEngine extends Engine {
 	constructor() {
 		super();
-		this.texture = {
-			width: 32,
-			height: 32,
-		};
 		this.canvasUI = document.querySelector("#canvasUI");
 		this.canvasUI.width = this.width;
 		this.canvasUI.height = this.height;
@@ -140,9 +136,17 @@ class CanvasEngine extends Engine {
 		if (this.player.movement.right) this.player.x += speed;
 		if (this.player.movement.down) this.player.y += speed;
 
-		if (this.player.movement.left && this.player.facing !== 0)
+		if (
+			this.player.movement.left &&
+			this.player.facing !== 0 &&
+			!this.player.movement.right
+		)
 			this.player.facing = 0;
-		else if (this.player.movement.right && this.player.facing !== 1)
+		else if (
+			this.player.movement.right &&
+			this.player.facing !== 1 &&
+			!this.player.movement.left
+		)
 			this.player.facing = 1;
 
 		if (this.player.animation.state !== "idle" && movement === 0) {

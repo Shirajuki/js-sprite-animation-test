@@ -11,10 +11,6 @@ const lerp = (start, end, amt) => {
 class PixiEngine extends Engine {
 	constructor() {
 		super();
-		this.texture = {
-			width: 32,
-			height: 32,
-		};
 	}
 	async init() {
 		// Canvas context setup
