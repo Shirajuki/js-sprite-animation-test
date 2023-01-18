@@ -20,13 +20,20 @@ a {
 	font-weight: 500;
 	color: #9c64ff;
 	text-decoration: none;
-	border-bottom: 1px solid #9c64ff;
+	border-radius: 8px;
+	border: 1px solid transparent;
 	transition: color 0.2s, filter 0.2s, border-color 0.2s;
+	cursor: pointer;
+	background-color: #1a1a1a;
+	font-size: 1em;
+	font-weight: 500;
+	font-family: inherit;
+	padding: 0.6em 1.2em;
 }
 a:hover {
 	color: #934ddd;
+	border-color: #9c64ff;
 }
-
 body {
 	margin: 0;
 	place-items: center;
@@ -34,13 +41,26 @@ body {
 	min-height: 100vh;
 	font-size: 18px;
 }
+header {
+	position: absolute;
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	height: 40px;
+}
+header > nav {
+	margin-top: 2px;
+}
+header > nav a.active {
+	pointer-events: none;
+	color: white;
+}
 main {
 	padding: 0 2rem;
 	max-width: 100vw;
 	overflow-x: hidden;
 	min-height: 100vh;
 }
-
 canvas {
 	display: block;
 	position: absolute;
@@ -54,23 +74,4 @@ canvas {
 }
 #canvas {
 	background-color: #1a1a1a;
-}
-
-button {
-	border-radius: 8px;
-	border: 1px solid transparent;
-	padding: 0.6em 1.2em;
-	font-size: 1em;
-	font-weight: 500;
-	font-family: inherit;
-	background-color: #1a1a1a;
-	cursor: pointer;
-	transition: border-color 0.25s;
-}
-button:hover {
-	border-color: #9c64ff;
-}
-button:focus,
-button:focus-visible {
-	outline: 4px auto -webkit-focus-ring-color;
 }
