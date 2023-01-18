@@ -40,7 +40,7 @@ class CanvasEngine extends Engine {
 				down: false,
 			},
 			animations: {
-				idle: { from: 0, to: 10, speed: 10 },
+				idle: { from: 0, to: 10, speed: 6 },
 				run: { from: 11, to: 22, speed: 4 },
 			},
 			animation: {
@@ -71,10 +71,17 @@ class CanvasEngine extends Engine {
 		this.sprite = new Image();
 		this.sprite.src = "spritesheet.png";
 
-		this.camera = {
-			x: this.height / 2 - this.player.y - this.player.height / 2,
-			y: this.height / 2 - this.player.y - this.player.height / 2,
-		};
+		this.camera = { x: 0, y: 0 };
+		this.camera.x = lerp(
+			this.camera.x,
+			this.width / 2 - this.player.x - this.player.width / 2,
+			1
+		);
+		this.camera.y = lerp(
+			this.camera.y,
+			this.height / 2 - this.player.y - this.player.height / 2,
+			1
+		);
 
 		this.initInputs();
 	}
@@ -83,13 +90,11 @@ class CanvasEngine extends Engine {
 			const { key } = event;
 			if (key === "ArrowLeft" || key === "a") {
 				this.player.movement.left = true;
-				this.player.movement.right = false;
 				this.player.facing = 0;
 			} else if (key === "ArrowUp" || key === "w") {
 				this.player.movement.up = true;
 			} else if (key === "ArrowRight" || key === "d") {
 				this.player.movement.right = true;
-				this.player.movement.left = false;
 				this.player.facing = 1;
 			} else if (key === "ArrowDown" || key === "s") {
 				this.player.movement.down = true;
@@ -134,6 +139,11 @@ class CanvasEngine extends Engine {
 		if (this.player.movement.up) this.player.y -= speed;
 		if (this.player.movement.right) this.player.x += speed;
 		if (this.player.movement.down) this.player.y += speed;
+
+		if (this.player.movement.left && this.player.facing !== 0)
+			this.player.facing = 0;
+		else if (this.player.movement.right && this.player.facing !== 1)
+			this.player.facing = 1;
 
 		if (this.player.animation.state !== "idle" && movement === 0) {
 			this.player.play("idle");
@@ -185,7 +195,7 @@ class CanvasEngine extends Engine {
 		this.ctx.restore();
 
 		// Draw text
-		this.ctxUI.font = "48px serif";
+		this.ctxUI.font = "48px Arial, serif";
 		this.ctxUI.fillText(`State: ${this.player.animation.state}`, 15, 50);
 		this.ctxUI.fillText(`Frame: ${this.player.animation.frame}`, 15, 50 * 2);
 		this.ctxUI.fillText(
