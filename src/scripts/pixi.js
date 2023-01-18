@@ -124,11 +124,11 @@ class PixiEngine extends Engine {
 		// Setup text
 		const style = new PIXI.TextStyle({
 			fontFamily: "Arial",
-			fontSize: 36,
+			fontSize: 32,
 			fontWeight: "bold",
 			fill: ["#fff"],
 			stroke: "#000",
-			strokeThickness: 5,
+			strokeThickness: 8,
 			wordWrap: true,
 			wordWrapWidth: 440,
 			lineJoin: "round",

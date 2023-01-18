@@ -199,13 +199,13 @@ class CanvasEngine extends Engine {
 		this.ctx.restore();
 
 		// Draw text
-		this.ctxUI.font = "48px Arial, serif";
-		this.ctxUI.fillText(`State: ${this.player.animation.state}`, 15, 50);
-		this.ctxUI.fillText(`Frame: ${this.player.animation.frame}`, 15, 50 * 2);
+		this.ctxUI.font = "32px Arial, serif";
+		this.ctxUI.fillText(`State: ${this.player.animation.state}`, 15, 40);
+		this.ctxUI.fillText(`Frame: ${this.player.animation.frame}`, 15, 40 * 2);
 		this.ctxUI.fillText(
 			`Pos: ${Math.round(this.player.x)},${Math.round(this.player.y)}`,
 			15,
-			50 * 3
+			40 * 3
 		);
 
 		this.request = window.requestAnimationFrame(() => this.render());
